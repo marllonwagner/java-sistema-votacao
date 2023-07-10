@@ -1,9 +1,16 @@
 package com.betrybe.sistemadevotacao;
 
+/**
+ * Classe responsável por executar a aplicação de votação.
+ */
 public class Principal {
 
+  /**
+   * Método principal.
+   *
+   * @param args argumentos de linha de comando
+   */
   public static void main(String[] args) {
-    // TODO Auto-generated method stub
     GerenciamentoVotacao votacao = new GerenciamentoVotacao();
     System.out.println("CADASTRO CANDIDATO");
     System.out.println(votacao.pessoasCandidatas.size());
@@ -17,8 +24,8 @@ public class Principal {
     votacao.cadastrarPessoaEleitora("jurandir", "123");
     votacao.cadastrarPessoaEleitora("jurandir", "124");
 
-    votacao.votar("123",20);
-    votacao.votar("124",21);
+    votacao.votar("123", 20);
+    votacao.votar("124", 21);
 
     votacao.mostrarResultado();
   }
