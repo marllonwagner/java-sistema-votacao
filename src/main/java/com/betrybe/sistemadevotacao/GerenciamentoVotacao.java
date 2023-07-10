@@ -7,9 +7,9 @@ import java.util.ArrayList;
  */
 public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
 
-  private ArrayList<String> pessoasCandidatas;
-  private ArrayList<String> pessoasEleitoras;
-  private ArrayList<String> cpfsComputados;
+  public ArrayList<PessoaCandidata> pessoasCandidatas;
+  public ArrayList<PessoaEleitora> pessoasEleitoras;
+  public ArrayList<String> cpfsComputados;
 
   /**
    * Construtor da classe GerenciamentoVotacao.
@@ -21,23 +21,80 @@ public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
     this.cpfsComputados = new ArrayList<>();
   }
 
+  /**
+   * Cadastra uma pessoa candidata com o nome e número especificados.
+   *
+   * @param nome   o nome da pessoa candidata
+   * @param numero o número da pessoa candidata
+   */
   @Override
   public void cadastrarPessoaCandidata(String nome, int numero) {
-    // Implementação do método
+    PessoaCandidata candidato = new PessoaCandidata(nome, numero);
+
+    if (pessoasCandidatas.stream().anyMatch(p -> p.getNumero() == numero)) {
+      System.out.println("Número da pessoa candidata já utilizado!");
+    } else {
+      pessoasCandidatas.add(candidato);
+    }
   }
 
+  /**
+   * Cadastra uma pessoa eleitora com o nome e CPF especificados.
+   *
+   * @param nome o nome da pessoa eleitora
+   * @param cpf  o CPF da pessoa eleitora
+   */
   @Override
   public void cadastrarPessoaEleitora(String nome, String cpf) {
-    // Implementação do método
+    PessoaEleitora eleitora = new PessoaEleitora(nome, cpf);
+
+    if (pessoasEleitoras.stream().anyMatch(pessoaEleitora -> pessoaEleitora.getCpf().equals(cpf))) {
+      System.out.println("Pessoa eleitora já cadastrada!");
+    } else {
+      pessoasEleitoras.add(eleitora);
+    }
   }
 
+  /**
+   * Registra o voto de uma pessoa eleitora para uma pessoa candidata específica.
+   *
+   * @param cpfPessoaEleitora     o CPF da pessoa eleitora
+   * @param numeroPessoaCandidata o número da pessoa candidata
+   */
   @Override
   public void votar(String cpfPessoaEleitora, int numeroPessoaCandidata) {
-    // Implementação do método
+    if (cpfsComputados.stream().anyMatch(cpf -> cpf.equals(cpfPessoaEleitora))) {
+      System.out.println("Pessoa eleitora já votou!");
+      return;
+    }
+
+    PessoaCandidata candidato = pessoasCandidatas.stream()
+        .filter(c -> c.getNumero() == numeroPessoaCandidata)
+        .toList()
+        .get(0);
+    candidato.receberVoto();
+    cpfsComputados.add(cpfPessoaEleitora);
   }
 
+  /**
+   * Mostra o resultado da votação, exibindo o número de votos recebidos por cada pessoa candidata.
+   */
   @Override
   public void mostrarResultado() {
-    // Implementação do método
+    int total = cpfsComputados.size();
+    if (total == 0) {
+      System.out.println("É preciso ter pelo menos um voto para mostrar o resultado.");
+      return;
+    }
+
+    for (PessoaCandidata pessoasCandidata : pessoasCandidatas) {
+      String nome = pessoasCandidata.getNome();
+      int votos = pessoasCandidata.getVotos();
+      int porcentagem = (100 * votos) / total;
+      System.out.println("Nome: " + nome + " - " + votos
+          + " votos" + " ( " + porcentagem + "%" + " )");
+    }
+
+    System.out.println("Total de votos: " + cpfsComputados.size());
   }
 }
